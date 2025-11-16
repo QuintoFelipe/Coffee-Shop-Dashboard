@@ -47,12 +47,22 @@ The dashboard equips store managers with a single control tower for the curated 
    ```
 3. **Install dependencies:**
    ```bash
-   pip install -r requirements.txt
+   make install
    ```
 4. **Launch the dashboard:**
    ```bash
-   streamlit run app.py
+   make run
    ```
+
+### Run with Docker
+Build a self-contained image and launch Streamlit without installing Python locally:
+
+```bash
+docker build -t coffee-dashboard .
+docker run --rm -p 8501:8501 coffee-dashboard
+```
+
+Visit http://localhost:8501 in your browser to use the dashboard. Pass additional `streamlit run` flags with `docker run` as needed (e.g., `-e STREAMLIT_THEME=dark`).
 
 ## Usage
 - Navigate the **Control Tower** sidebar to filter by date range, product categories, and regions. Streamlit caches data for snappy iterations.
@@ -65,7 +75,7 @@ The dashboard equips store managers with a single control tower for the curated 
 1. Drop the new CSV into `Data/` (or point to an alternate path when running the script).
 2. Validate the file before shipping to production:
    ```bash
-   python scripts/data_check.py  # accepts an optional --path argument
+   make data-check  # accepts an optional --path argument via DATA_CHECK_OPTS="--path ..."
    ```
 3. If schema or business rules change, update `app_utils/data_processing.py` and rerun the Streamlit app to ensure visuals still render.
 
@@ -73,9 +83,20 @@ The dashboard equips store managers with a single control tower for the curated 
 - Schedule `scripts/data_check.py` in CI before every deployment.
 - Store the validated CSV in an object store or database once the script passes.
 
-## Testing
-- **Data health:** `python scripts/data_check.py`
+## Developer Tooling
+
+- **Data health:** `make data-check`
 - **Unit tests:** `pytest` (add new tests under a `tests/` directory as you extend the data helpers or visual logic).
+- **Formatting:** `make format` (Black + isort-compatible settings)
+- **Linting:** `make lint` (Flake8 with the same 100 character line length limit)
+- **One-time setup:** `make install`
+
+The formatting and linting rules are centrally configured in `pyproject.toml` so CI and local runs stay in sync.
+
+## Automation
+
+- `scripts/data_check.py` runs locally via `make data-check` and in CI.
+- `.github/workflows/ci.yml` installs dependencies, runs the data check, executes Flake8, and conditionally runs `pytest` when tests are present.
 
 ## Contribution Guidelines
 1. Fork or branch off `main`.
