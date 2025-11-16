@@ -24,6 +24,10 @@ from app_utils.data_processing import (
 )
 from theme import THEME
 
+COFFEE_CONTINUOUS = ["#fce8d5", "#f2c8a2", "#da9b6c", "#b66a3d", "#6b2f17"]
+COFFEE_HIGHLIGHTS = ["#8b4a2d", "#c0824f", "#f2c8a2", "#5c2b16"]
+PLOT_BACKGROUND = "rgba(255, 250, 243, 0.95)"
+
 DATA_PATH = Path("Data/coffee_sales.csv")
 
 
@@ -49,22 +53,31 @@ def inject_theme() -> None:
         f"""
         <style>
             .stApp {{
-                background: linear-gradient(135deg, {colors['background']} 0%, #111827 100%);
+                background: radial-gradient(circle at top, rgba(255,255,255,0.65), transparent 45%),
+                            linear-gradient(135deg, {colors['background']} 0%, #f1e3d5 100%);
                 font-family: {fonts['base']};
                 color: {colors['text']};
             }}
+            .block-container {{
+                padding-top: 2rem;
+            }}
             .awesome-card {{
                 background: {colors['surface']};
-                border-radius: 20px;
-                padding: 1.5rem;
+                border-radius: 18px;
+                padding: 1.35rem 1.5rem;
                 box-shadow: {THEME['shadows']['soft']};
-                border: 1px solid rgba(148, 163, 184, 0.15);
+                border: 1px solid rgba(138, 74, 45, 0.08);
+                min-height: 150px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 0.35rem;
             }}
             .awesome-card h3 {{
                 font-size: 2.35rem;
                 font-family: {fonts['numeric']};
                 margin: 0;
-                color: {colors['primary']};
+                color: {colors['accent']};
             }}
             .awesome-card span {{
                 font-size: 0.85rem;
@@ -75,12 +88,37 @@ def inject_theme() -> None:
             .awesome-card p {{
                 margin-top: 0.35rem;
                 color: {colors['secondary']};
+                font-weight: 600;
             }}
             .section-title {{
                 font-size: 1.25rem;
                 text-transform: uppercase;
                 letter-spacing: 0.3em;
                 color: {colors['muted']};
+            }}
+            [data-testid="stSidebar"] > div:first-child {{
+                background: rgba(255, 255, 255, 0.9);
+                border-right: 1px solid rgba(91, 53, 30, 0.15);
+            }}
+            [data-testid="stSidebar"] label {{
+                color: {colors['text']};
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                font-size: 0.8rem;
+                font-weight: 600;
+            }}
+            .stSidebar .stMultiSelect div[data-baseweb="select"] > div {{
+                background: rgba(245, 241, 234, 0.8);
+                color: {colors['text']};
+            }}
+            .stSidebar .stDateInput input {{
+                color: {colors['text']};
+            }}
+            .stSidebar input, .stSidebar select {{
+                color: {colors['text']};
+            }}
+            .stSidebar .stSlider > div {{
+                color: {colors['text']};
             }}
         </style>
         """,
@@ -147,11 +185,11 @@ def build_seasonality_section(filtered: pd.DataFrame) -> None:
         y="revenue",
         markers=True,
         title="Revenue by day",
-        color_discrete_sequence=[THEME["colors"]["secondary"]],
+        color_discrete_sequence=[THEME["colors"]["primary"]],
     )
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(30,41,59,0.6)",
+        plot_bgcolor=PLOT_BACKGROUND,
         font_color=THEME["colors"]["text"],
         margin=dict(l=10, r=10, t=40, b=10),
     )
@@ -169,7 +207,7 @@ def build_product_mix_section(filtered: pd.DataFrame) -> None:
         path=["product_category", "coffee_name"],
         values="revenue",
         color="share",
-        color_continuous_scale="sunsetdark",
+        color_continuous_scale=COFFEE_CONTINUOUS,
         title="Category contribution",
     )
     fig.update_layout(
@@ -196,6 +234,7 @@ def build_regional_section(filtered: pd.DataFrame) -> None:
         hover_data={"revenue": ":$,.0f", "orders": True},
         projection="natural earth",
         title="Store footprint",
+        color_discrete_sequence=COFFEE_HIGHLIGHTS,
     )
     map_fig.update_layout(
         margin=dict(l=0, r=0, t=40, b=0),
@@ -207,13 +246,13 @@ def build_regional_section(filtered: pd.DataFrame) -> None:
         x="region",
         y="revenue",
         color="orders",
-        color_continuous_scale="viridis",
+        color_continuous_scale=COFFEE_CONTINUOUS,
         title="Revenue and order volume",
         text_auto=".2s",
     )
     bar_fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(30,41,59,0.6)",
+        plot_bgcolor=PLOT_BACKGROUND,
         font_color=THEME["colors"]["text"],
         margin=dict(l=0, r=0, t=40, b=0),
     )
@@ -235,13 +274,13 @@ def build_profitability_section(filtered: pd.DataFrame) -> None:
         size="margin",
         color="margin_pct",
         hover_name="coffee_name",
-        color_continuous_scale="turbo",
+        color_continuous_scale=COFFEE_CONTINUOUS,
         labels={"avg_price": "Average price", "units": "Units sold"},
         title="Price vs volume",
     )
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(30,41,59,0.6)",
+        plot_bgcolor=PLOT_BACKGROUND,
         font_color=THEME["colors"]["text"],
         margin=dict(l=0, r=0, t=40, b=0),
     )
@@ -292,12 +331,12 @@ def main() -> None:
                 x="season",
                 y="avg_revenue",
                 color="avg_revenue",
-                color_continuous_scale="amp",
+                color_continuous_scale=COFFEE_CONTINUOUS,
                 title="Seasonal averages",
             )
             seasonal_fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(30,41,59,0.6)",
+                plot_bgcolor=PLOT_BACKGROUND,
                 font_color=THEME["colors"]["text"],
             )
             st.plotly_chart(seasonal_fig, use_container_width=True)
