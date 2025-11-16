@@ -24,7 +24,7 @@ from app_utils.data_processing import (
 )
 from theme import THEME
 
-DATA_PATH = Path("Data/Coffe_sales.csv")
+DATA_PATH = Path("Data/coffee_sales.csv")
 
 
 @st.cache_data(show_spinner=False)

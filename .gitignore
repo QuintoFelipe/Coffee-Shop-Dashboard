@@ -1,0 +1,22 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments & local settings
+.venv/
+.env
+.env.local
+*.log
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Large or sensitive exports - keep only the curated sample
+Data/*
+!Data/coffee_sales.csv
+!Data/README.md
+
+# VS Code and editor settings
+.vscode/
+*.code-workspace
