@@ -1,6 +1,6 @@
 # Coffee Shop Performance Dashboard
 
-![Dashboard preview](assets/dashboard-preview.svg)
+![Dashboard preview](assets/dashboard-preview.png)
 
 ## Overview
 The dashboard equips store managers with a single control tower for the curated `coffee_sales` dataset. It highlights how each location, product line, and seasonal window contributes to revenue so that merchandising, staffing, and promotional decisions can be made with confidence. By surfacing actionable KPIs in real time, the tool replaces static spreadsheet reporting and accelerates conversations around mix optimization, seasonal menu planning, and staffing.
@@ -33,7 +33,7 @@ The dashboard equips store managers with a single control tower for the curated 
 │   ├── data_check.py        # Lightweight schema + quality gate
 │   └── generate_dashboard_preview.py  # Creates the README preview image
 ├── assets/
-│   └── dashboard-preview.svg
+│   └── dashboard-preview.png
 ├── theme.py                 # Centralized color + typography theme
 └── requirements.txt
 ```
@@ -93,14 +93,4 @@ Visit http://localhost:8501 in your browser to use the dashboard. Pass additiona
 
 The formatting and linting rules are centrally configured in `pyproject.toml` so CI and local runs stay in sync.
 
-## Automation
 
-- `scripts/data_check.py` runs locally via `make data-check` and in CI.
-- `.github/workflows/ci.yml` installs dependencies, runs the data check, executes Flake8, and conditionally runs `pytest` when tests are present.
-
-## Contribution Guidelines
-1. Fork or branch off `main`.
-2. Create focused commits (data prep, UI tweaks, documentation, etc.).
-3. Accompany new features with doc updates and tests.
-4. Open a pull request describing business value, screenshots/GIFs, and validation steps.
-5. Tag stakeholders for review before merging.
